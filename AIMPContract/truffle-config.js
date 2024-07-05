@@ -57,7 +57,7 @@ module.exports = {
     // },
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
-    FraxtalTestnetL2: {
+    FraxtalMainnetL2: {
       provider: () => {
         if (!privateKeyTest.trim()) {
           throw new Error(
@@ -69,7 +69,25 @@ module.exports = {
           providerOrUrl: 'https://rpc.frax.com',
         });
       },
-      network_id: 252,     // FraxtalTestnetL2's id
+      network_id: 252,     // FraxtalMainnetL2's id
+      gas: 5500000,        // FraxtalMainnetL2 has a lower block limit than mainnet
+      // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+      // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    },
+    FraxtalTestnetL2: {
+      provider: () => {
+        if (!privateKeyTest.trim()) {
+          throw new Error(
+            'Please enter a private key with funds, you can use the default one'
+          );
+        }
+        return new HDWalletProvider({
+          privateKeys: [privateKeyTest],
+          providerOrUrl: 'https://rpc.testnet.frax.com',
+        });
+      },
+      network_id: 2522,     // FraxtalTestnetL2's id
       gas: 5500000,        // FraxtalTestnetL2 has a lower block limit than mainnet
       // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)

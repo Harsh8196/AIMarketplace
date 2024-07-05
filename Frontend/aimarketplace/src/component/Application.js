@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { json, useParams } from 'react-router-dom';
 import MetaMaskOnboarding from '@metamask/onboarding';
 import '../css/Application.css'
-import verifier from '../script/Verifier';
 import AIMarketPlace from '../script/AIMarketPlace'
 const url = process.env.REACT_APP_BACKEND_URL;
-const modelName = "Model2"
+const modelName = "ModelDemo"
 
 function Application() {
     const [accounts, setAccounts] = useState('');
-    const [audiofile, setAudioFile] = useState()
     const [errorMessage, setErrorMessage] = useState('')
     const [loading, setLoading] = useState(true)
     const [modelObj, setModelObj] = useState({})
-    const [voiceScore,setVoiceScore] = useState('Not Calculated yet')
     const [isProofGen,setIsProofGen] = useState(false)
     const [verifyLoading, setVerifyLoading] = useState(true)
     const [proofHex,setProofHex] = useState('')

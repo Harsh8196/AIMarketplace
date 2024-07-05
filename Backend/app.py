@@ -255,7 +255,7 @@ def prove(model_name,latest_uuid,user_name):
 
 @celery.task
 def voice_judge_input(audio,address):
-    addr_ints = u64_to_fr(extract_bytes_addr(address)).__int__()
+    addr_ints = int(address,0)
     with tempfile.NamedTemporaryFile() as wfo:
         # write audio to temp file
         wfo.write(audio)

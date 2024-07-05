@@ -60,6 +60,7 @@ function Application() {
             formdata.append('file',audiofile)
             formdata.append('fileName', audiofile.name)
             formdata.append('model_name', modelName)
+            formdata.append('address',accounts[0])
             setErrorMessage('Uploading and Processing Audio File...')
             let response = await fetch(url+'/voicejudge',{
                 method: 'POST',

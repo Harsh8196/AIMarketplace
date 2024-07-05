@@ -3,7 +3,7 @@ import MetaMaskOnboarding from '@metamask/onboarding';
 import '../css/Application.css'
 import AIMarketPlace from '../script/AIMarketPlace'
 const url = process.env.REACT_APP_BACKEND_URL;
-const modelName = "ModelDemo"
+const modelName = "DemoModel"
 
 function Application() {
     const [accounts, setAccounts] = useState('');

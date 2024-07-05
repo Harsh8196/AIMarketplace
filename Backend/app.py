@@ -522,7 +522,7 @@ def verifyproof_task():
         result.ready()  # returns true when ready
         res = result.get()
         
-        return jsonify({'status': 'ok', 'res': res})
+        return jsonify({'status': 'ok', 'res': res['res']})
     
     except Exception as e:
          print(e)

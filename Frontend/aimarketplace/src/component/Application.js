@@ -7,7 +7,8 @@ import AIMarketPlace from '../script/AIMarketPlace'
 const projectId = process.env.REACT_APP_PROJECTID;
 const projectSecret = process.env.REACT_APP_PROJECTSECRET;
 const url = process.env.REACT_APP_BACKEND_URL;
-const modelName = 'VoiceJudge3'
+//const url = 'http://127.0.0.1:8000';
+const modelName = 'VoiceJudge2'
 
 function Application() {
     const [accounts, setAccounts] = useState('');
@@ -60,7 +61,7 @@ function Application() {
             formdata.append('file',audiofile)
             formdata.append('fileName', audiofile.name)
             formdata.append('model_name', modelName)
-            formdata.append('address',accounts[0])
+            formdata.append('address',0)
             setErrorMessage('Uploading and Processing Audio File...')
             let response = await fetch(url+'/voicejudge',{
                 method: 'POST',

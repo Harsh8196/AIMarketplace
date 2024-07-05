@@ -275,7 +275,30 @@ def voice_judge_input(audio,address):
             "input_data": [[addr_ints],val.flatten().tolist()],
         }
         return inp
-     
+    
+async def verifyproofs(model_name,latest_uuid,address,rpc_url):
+    MODEL_FOLDER = os.path.join(ARTIFACTS_PATH,model_name)
+    PROOF_FOLDER = os.path.join(MODEL_FOLDER,'proof')
+    
+    PROOF_PATH = os.path.join(PROOF_FOLDER,f"proof_{latest_uuid}.json")
+    print(PROOF_PATH)
+    res = await ezkl.verify_evm(
+        address,
+        PROOF_PATH,
+        rpc_url
+    )
+
+    return res
+
+@celery.task    
+def verify(model_name,latest_uuid,address,rpc_url):
+    loop = asyncio.get_event_loop()
+    verify = loop.run_until_complete(verifyproofs(model_name,latest_uuid,address,rpc_url))
+    print('Verify proof successfully.')
+
+    return {'status': 'success', 'res':verify}
+    
+    return res
 
 @app.route('/', methods=['GET'])
 def index():
@@ -488,22 +511,16 @@ def voicejudge():
          return jsonify({'status': 'Error'})
 
 @app.route('/verifyproof', methods=['POST'])
-async def verifyproof():
+def verifyproof_task():
     try:
         request_data = request.get_json()
         model_name = request_data['model_name']
         latest_uuid = request_data['latest_uuid']
         address = request_data['address']
         rpc_url = request_data['rpc_url']
-        MODEL_FOLDER = os.path.join(ARTIFACTS_PATH,model_name)
-        PROOF_FOLDER = os.path.join(MODEL_FOLDER,'proof')
-        
-        PROOF_PATH = os.path.join(PROOF_FOLDER,f"proof_{latest_uuid}.json")
-        res = await ezkl.verify_evm(
-            address,
-            PROOF_PATH,
-            rpc_url
-        )
+        result = verify.delay(model_name,latest_uuid,address,rpc_url)
+        result.ready()  # returns true when ready
+        res = result.get()
         
         return jsonify({'status': 'ok', 'res': res})
     

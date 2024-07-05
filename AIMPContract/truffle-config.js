@@ -66,10 +66,10 @@ module.exports = {
         }
         return new HDWalletProvider({
           privateKeys: [privateKeyTest],
-          providerOrUrl: 'https://rpc.testnet.frax.com',
+          providerOrUrl: 'https://rpc.frax.com',
         });
       },
-      network_id: 2522,     // FraxtalTestnetL2's id
+      network_id: 252,     // FraxtalTestnetL2's id
       gas: 5500000,        // FraxtalTestnetL2 has a lower block limit than mainnet
       // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)

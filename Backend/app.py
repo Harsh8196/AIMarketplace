@@ -272,7 +272,7 @@ def voice_judge_input(audio,address):
             val = val[:, :, :130]
 
         inp = {
-            "input_data": [addr_ints,val.flatten().tolist()],
+            "input_data": [[addr_ints],val.flatten().tolist()],
         }
         return inp
      

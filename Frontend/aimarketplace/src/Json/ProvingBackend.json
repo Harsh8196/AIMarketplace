@@ -1,0 +1,345 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Swagger AI Marketplace Proving Backend",
+    "description": "Our AI Marketplace is using ezkl [https://ezkl.xyz/] library for Supporting verifiable AI systems with zero knowledge cryptography.\nEzkl takes a high-level description of your program and sets up a zero-knowledge prover and verifier.\nThese proofs can be trusted by anyone with a copy of the verifier, and verified directly on Ethereum and compatible chains.\nRunning ZKML proofs can be computationally expensive. We've made the process easier by providing a backend service that can run the proofs for you.",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "prove",
+      "description": "Compute the proof for your model"
+    },
+    {
+      "name": "user",
+      "description": "Operations about user"
+    }
+  ],
+  "paths": {
+    "/uploadinput": {
+      "post": {
+        "tags": [
+          "prove"
+        ],
+        "summary": "Upload your model input",
+        "description": "Upload your model input",
+        "operationId": "uploadinput",
+        "requestBody": {
+          "description": "uploadinput",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Uploadinput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadinputResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "422": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    },
+    "/genwitness": {
+      "post": {
+        "tags": [
+          "prove"
+        ],
+        "summary": "Generate withness for your input",
+        "description": "Generate withness for your input. Used the latest_uuid received after uploading your input",
+        "operationId": "genwitness",
+        "requestBody": {
+          "description": "genwitness",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateWitness"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateWitnessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "422": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    },
+    "/prove": {
+      "post": {
+        "tags": [
+          "prove"
+        ],
+        "summary": "Generate proof for your input",
+        "description": "Generate proof for your input. Used the latest_uuid received after uploading your input",
+        "operationId": "prove",
+        "requestBody": {
+          "description": "prove",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Prove"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProveResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "422": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    },
+    "/userbalance": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user credits",
+        "description": "Get user credits",
+        "operationId": "userbalance",
+        "parameters": [
+          {
+            "name": "model_name",
+            "in": "query",
+            "description": "Model Name",
+            "required": true,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "description": "Address of user",
+            "required": true,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserBalanceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Uploadinput": {
+        "required": [
+          "model_name",
+          "input_data"
+        ],
+        "type": "object",
+        "properties": {
+          "model_name": {
+            "type": "string",
+            "example": "model-1"
+          },
+          "input_data": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "example": [
+                0.001,
+                0.002
+              ]
+            }
+          }
+        }
+      },
+      "UploadinputResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "res": {
+            "type": "object",
+            "properties": {
+              "latest_uuid": {
+                "type": "string",
+                "example": "72f296f7-a09f-400f-b63e-ea2a03d8f94f"
+              }
+            }
+          }
+        }
+      },
+      "GenerateWitness": {
+        "required": [
+          "model_name",
+          "latest_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "model_name": {
+            "type": "string",
+            "example": "model-1"
+          },
+          "latest_uuid": {
+            "type": "string",
+            "example": "72f296f7-a09f-400f-b63e-ea2a03d8f94f"
+          }
+        }
+      },
+      "GenerateWitnessResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "res": {
+            "type": "string",
+            "example": "Witness generated successfully."
+          }
+        }
+      },
+      "Prove": {
+        "required": [
+          "model_name",
+          "address",
+          "latest_uuid"
+        ],
+        "type": "object",
+        "properties": {
+          "model_name": {
+            "type": "string",
+            "example": "model-1"
+          },
+          "address": {
+            "type": "string",
+            "example": 1
+          },
+          "latest_uuid": {
+            "type": "string",
+            "example": "72f296f7-a09f-400f-b63e-ea2a03d8f94f"
+          }
+        }
+      },
+      "ProveResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "res": {
+            "properties": {
+              "output_hex": {
+                "type": "string",
+                "example": "72f296f7-a09f-400f-b63e-ea2a03d8f94f"
+              },
+              "proof_hex": {
+                "type": "string",
+                "example": "72f296f7-a09f-400f-b63e-ea2a03d8f94f"
+              },
+              "output": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "example": [
+                    0.001,
+                    0.002
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserBalanceResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "res": {
+            "properties": {
+              "onChainReq": {
+                "type": "integer",
+                "example": 0
+              },
+              "offChainReq": {
+                "type": "integer",
+                "example": 0
+              },
+              "totalReq": {
+                "type": "integer",
+                "example": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

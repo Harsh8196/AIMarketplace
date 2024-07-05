@@ -1,0 +1,19 @@
+.header1 {
+  background: linear-gradient(to right, #000000 0%, #0253cc 100%);
+}
+
+.page-container{
+  height: calc(100vh - 70px);
+}
+.loading-container{
+  width: 98vw;
+  height: calc(100vh - 70px);
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+.loading-mymodel-container{
+  width: 98vw;
+  height: 300px;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}

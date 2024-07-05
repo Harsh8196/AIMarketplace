@@ -251,7 +251,6 @@ def prove(model_name,latest_uuid,user_name):
         }
     
     PROOF_FILE.close()
-    os.remove(PROOF_PATH)
     return result
 
 @celery.task
@@ -480,6 +479,30 @@ def voicejudge():
         result = voice_judge_input.delay(f)
         result.ready()  # returns true when ready
         res = result.get()
+        
+        return jsonify({'status': 'ok', 'res': res})
+    
+    except Exception as e:
+         print(e)
+         return jsonify({'status': 'Error'})
+
+@app.route('/verifyproof', methods=['POST'])
+async def verifyproof():
+    try:
+        request_data = request.get_json()
+        model_name = request_data['model_name']
+        latest_uuid = request_data['latest_uuid']
+        address = request_data['address']
+        rpc_url = request_data['rpc_url']
+        MODEL_FOLDER = os.path.join(ARTIFACTS_PATH,model_name)
+        PROOF_FOLDER = os.path.join(MODEL_FOLDER,'proof')
+        
+        PROOF_PATH = os.path.join(PROOF_FOLDER,f"proof_{latest_uuid}.json")
+        res = await ezkl.verify_evm(
+            address,
+            PROOF_PATH,
+            rpc_url
+        )
         
         return jsonify({'status': 'ok', 'res': res})
     

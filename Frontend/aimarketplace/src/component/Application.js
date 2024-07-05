@@ -7,7 +7,7 @@ import AIMarketPlace from '../script/AIMarketPlace'
 const projectId = process.env.REACT_APP_PROJECTID;
 const projectSecret = process.env.REACT_APP_PROJECTSECRET;
 const url = process.env.REACT_APP_BACKEND_URL;
-const modelName = 'VoiceJudge2'
+const modelName = 'VoiceJudge3'
 
 function Application() {
     const [accounts, setAccounts] = useState('');
@@ -20,6 +20,7 @@ function Application() {
     const [verifyLoading, setVerifyLoading] = useState(true)
     const [proofHex,setProofHex] = useState('')
     const [scoreHex,setScoreHex] = useState('')
+    const [uuid,setUUID] = useState('')
 
     useEffect(() => {
         function handleNewAccounts(newAccounts) {
@@ -80,6 +81,7 @@ function Application() {
             })
             result = await response.json()
             let uuid = result['res']['latest_uuid']
+            setUUID(uuid)
             setErrorMessage('Generating Witness...')
             response = await fetch(url+'/genwitness',{
                 method: 'POST',
@@ -147,8 +149,26 @@ function Application() {
         setVerifyLoading(false)
         console.log(modelObj['verifier'])
         try {
-            let result = await verifier.methods.verifyProof(proofHex,[scoreHex]).send({"from":accounts[0]})
-            console.log(result)
+            console.log(proofHex)
+            console.log(scoreHex)
+            let response = await fetch(url+'/verifyproof',{
+                method: 'POST',
+                headers:{
+                    "content-type": "application/json",
+                },
+                body:JSON.stringify({
+                    "model_name":modelName,
+                    "latest_uuid":uuid,
+                    "address":modelObj["verifier"],
+                    "rpc_url":process.env.REACT_APP_NETWORK_URL
+                })
+            })
+            let result = await response.json()
+            if(result['res'] === true){
+                setErrorMessage("Proof verification succeeded.")
+            }else {
+                setErrorMessage("Proof verification failed.")
+            }
             setVerifyLoading(true)
         } catch (error) {
             console.log(error)
@@ -215,7 +235,7 @@ function Application() {
                                                     Upload Audio</button>
                                                 <button onClick={verifyOnChain} className="btn btn-marketplace form-control m-2" disabled={(!isProofGen || !verifyLoading)}>
                                                     <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" hidden={verifyLoading}></span>
-                                                    Verify Proof Onchain</button>
+                                                    Verify Proof</button>
                                             </div>
                                         </form>
                                     </div>

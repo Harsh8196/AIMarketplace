@@ -254,8 +254,8 @@ def prove(model_name,latest_uuid,user_name):
     return result
 
 @celery.task
-def voice_judge_input(audio):
-    addr_ints = [0.0]
+def voice_judge_input(audio,address):
+    addr_ints = extract_bytes_addr(address)
     with tempfile.NamedTemporaryFile() as wfo:
         # write audio to temp file
         wfo.write(audio)
@@ -474,9 +474,10 @@ def verifier():
 def voicejudge():
     try:
         modelname = request.form['model_name']
+        address = request.form['address']
         f = request.files['file'].read()
         print(f)
-        result = voice_judge_input.delay(f)
+        result = voice_judge_input.delay(f,address)
         result.ready()  # returns true when ready
         res = result.get()
         

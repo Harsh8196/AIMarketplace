@@ -149,8 +149,8 @@ function Application() {
         setVerifyLoading(false)
         console.log(modelObj['verifier'])
         try {
-            console.log(proofHex)
-            console.log(scoreHex)
+            // console.log(proofHex)
+            // console.log(scoreHex)
             let response = await fetch(url+'/verifyproof',{
                 method: 'POST',
                 headers:{
@@ -164,6 +164,7 @@ function Application() {
                 })
             })
             let result = await response.json()
+            console.log(result)
             if(result['res'] === true){
                 setErrorMessage("Proof verification succeeded.")
             }else {
